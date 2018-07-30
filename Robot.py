@@ -43,11 +43,17 @@ class Robot(object):
         if self.testing:
             # TODO 1. No random choice when testing
             self.epsilon = 1
+            self.alpha = 0.5
         else:
             # TODO 2. Update parameters when learning
-#             self.epsilon = self.epsilon0 - self.t * 0.001 #linear decay
-#             self.epsilon = self.epsilon0*(0.99**self.t) #
-            self.epsilon = self.epsilon0
+            
+            self.epsilon = self.epsilon0 - self.t * 0.001 #linear decay
+            
+#             self.epsilon = self.epsilon0*(0.9**self.t) # 
+
+#             self.epsilon = self.epsilon0  #fixed epsilon
+            
+#             self.alpha = self.alpha - self.t * 0.001 # learnrate decay seems not work
         return self.epsilon
 
     def sense_state(self):
