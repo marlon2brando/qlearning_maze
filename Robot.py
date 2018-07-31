@@ -49,7 +49,7 @@ class Robot(object):
             
             self.epsilon = self.epsilon0 - self.t * 0.001 #linear decay
             
-#             self.epsilon = self.epsilon0*(0.9**self.t) # 
+#             self.epsilon = self.epsilon0*(0.99**self.t) # 
 
 #             self.epsilon = self.epsilon0  #fixed epsilon
             
@@ -74,8 +74,7 @@ class Robot(object):
         # If Qtable[state] already exits, then do
         # not change it.
         if state not in self.Qtable.keys():
-            new_state_value = {'u':0.0,'l':0.0,'d':0.0,'r':0.0}
-            self.Qtable[state] = new_state_value
+            self.Qtable.setdefault(state,{a:0.0 for a in self.valid_actions})
 
     def choose_action(self):
         """
@@ -113,7 +112,7 @@ class Robot(object):
             # to the given rules
             q_predict = self.Qtable[self.state][action]
             if next_state != self.maze.destination:
-                q_target = r + self.gamma*max(self.Qtable[self.state].values())
+                q_target = r + self.gamma*max(self.Qtable[next_state].values())
             else:
                 q_target = r
             self.Qtable[self.state][action] += self.alpha*(q_target-q_predict)
@@ -136,5 +135,6 @@ class Robot(object):
         if self.learning and not self.testing:
             self.update_Qtable(reward, action, next_state) # update q table
             self.update_parameter() # update parameters
-
+            
+        self.t += 1
         return action, reward
